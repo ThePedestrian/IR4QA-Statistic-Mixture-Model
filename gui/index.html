@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Start your development with a Design System for Bootstrap 4.">
+  <meta name="author" content="Creative Tim">
+  <title>Information Retrieval for Question Answering Systems using a Statistical Mixture Model</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+  <!-- Icons -->
+  <link href="./assets/vendor/nucleo/css/nucleo.css" rel="stylesheet">
+  <link href="./assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- Argon CSS -->
+  <link type="text/css" href="./assets/css/argon.css?v=1.0.1" rel="stylesheet">
+  <!-- Docs CSS -->
+  <link type="text/css" href="./assets/css/docs.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <header class="header-global">
+    <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light headroom">
+      <div class="container">
+        <a class="navbar-brand mr-lg-5" href="../index.html">
+          IR4QA - Demonstation
+        </a>
+
+      </div>
+    </nav>
+
+  </header>
+  <main class="profile-page">
+
+    <section class="section-profile-cover section-shaped my-0">
+      <!-- Circles background -->
+      <div class="shape shape-style-1 shape-primary alpha-4">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <!-- SVG separator -->
+      <div class="separator separator-bottom separator-skew">
+        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+
+        <div class="card card-profile shadow mt--300">
+
+          <div class="mt-5">
+            <div  style="margin-top:-300px;padding-bottom: 130px;">
+              <p class="lead text-white">Ask a question.</p>
+            <div class="form-group">
+              <input id="uffaz_faq" type="text" placeholder="Search Frequency Asked Questions (FAQs)" class="form-control form-control-alternative input-lg"
+                style="padding:30px 20px;" />
+            </div>
+          </div>
+            <div style="padding:0 30px;margin:0;min-height: 300px;">
+
+              <div class="row">
+                <div class="col-lg-12" id="results-placeholder">
+                  
+                  <!--<table>
+                    <tr>
+                      <td style="vertical-align:top; padding-right:20px;margin-top: -5px;"><h5>1</h5></td>
+                      <td><p>My mom died when I was 8 and I have an awful dad when it comes to health and body things. I omes to health and omes to health andomes to health andomes to health and</p>
+                        <p style="margin-bottom:0;"><span class="badge badge-pill badge-primary text-uppercase">Primary</span></p></td>
+                    </tr>
+                  </table>
+                  <hr />
+
+                  <table>
+                      <tr>
+                        <td style="vertical-align:top; padding-right:20px;margin-top: -5px;"><h5>1</h5></td>
+                        <td><p>My mom died when I was 8 and I have an awful dad when it comes to health and body things. I omes to health and omes to health andomes to health andomes to health and</p>
+                          <p><span class="badge badge-pill badge-primary text-uppercase">Primary</span></p></td>
+                      </tr>
+                    </table>
+                    <hr /> -->
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <div class="row align-items-center justify-content-md-between">
+        <div class="col-md-6">
+          <div class="copyright">
+            &copy; 2018
+            <a href="#">Uffaz Nathaniel</a>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Core -->
+  <script src="./assets/vendor/jquery/jquery.min.js"></script>
+  <script src="./assets/vendor/popper/popper.min.js"></script>
+  <script src="./assets/vendor/bootstrap/bootstrap.min.js"></script>
+  <script src="./assets/vendor/headroom/headroom.min.js"></script>
+  <!-- Argon JS -->
+  <script src="./assets/js/argon.js?v=1.0.1"></script>
+
+  <script src="./assets/jquery.ba-throttle-debounce.js"></script>
+
+  <script type="text/javascript">
+  jQuery(function() {
+    var $ = jQuery;
+    var $input = $('#uffaz_faq');
+    var $resultsHolder = $('#results-placeholder');
+
+    function openInNewTab(url) {
+      var win = window.open(url, '_blank');
+      win.focus();
+    }
+
+    $resultsHolder.on('click', 'table', function(e) {
+      var yahooId = $(this).attr('data-yahooId');
+      var url = "https://answers.yahoo.com/question/index?qid=" + yahooId;
+      openInNewTab(url);
+    });
+
+    function fetchAndRenderResults() {
+      console.log('fetchAndRenderResults() called');
+      $.ajax({
+        url: '/faq',
+        data: {
+          q: $input.val()
+        },
+        type: 'GET',
+        success: function(results) {
+          $resultsHolder.html('');
+          var i = 0;
+          results.forEach(function(result) {
+            var cat = result['category'];
+            var ans = result['answers'];
+            var yahooId = result['yahoo_id'];
+            ans.forEach(function(a) {
+              var score = a[0];
+              var answer = a[1];
+              if (parseInt(score) >= 2) {
+                var html = '<table data-yahooId="' + yahooId + '">' + 
+                      '<tr>' +
+                        '<td style="vertical-align:top; padding-right:20px;margin-top: -5px;"><h5>' + (++i) + '</h5></td>' +
+                        '<td><p>' + answer + '</p>' + 
+                          '<p style="margin-bottom:0;"><span class="badge badge-pill badge-primary text-uppercase">' + cat + '</span></p></td>' +
+                      '</tr>' +
+                    '</table>' +
+                    '<hr />';
+                $resultsHolder.append(html);
+              }
+            });
+          });
+        },
+        error: function (err) {
+          alert(err);
+        }
+      });
+
+
+    }
+
+
+    $input.keyup($.debounce(300, false, function() {
+      console.log('keyup() called');
+      fetchAndRenderResults();
+    }));
+  });
+  </script>
+
+</body>
+
+</html>
